@@ -16,7 +16,7 @@
 |-------------+------+------+------+------+------+---------+------+------+------+------|------------|
 | Shift       |   Z  |   X  |   C  |   V  |   B  |   N     |   M  |   ,  |   .  |   /  | '/Shift    |
 |-------------+------+------+------+------+------+---------+------+------+------+------|------------|
-| Ctrl        | Alt  | CMD  | FN   |Lower |Space |Sp/Arrow |Raise | Left | Down | Up   | Right/Ctrl |
+| Ctrl        | Alt  | CMD  | CMD  |Lower |Space |Sp/Arrow |Raise | FN   | CAPS | Alt  | Ctrl       |
 `---------------------------------------------------------------------------------------------------'
 ```
 
@@ -25,8 +25,8 @@ Standard planck QWERTY, except:
   * [Enter] replaces ['/"]. Gives a closer feel to a standard keyboard, and allows [Enter] to be registered immediately.
   * ['/"] is moved down to [RShift] when tapped.
   * Mods are rearranged in left lower corner.
-  * vim style arrows, but corner key is also [Ctrl] when held.
   * Either [Esc] or the right hand [Space], when held, activate the ARROW layer.
+  * Two convenient command mods on the left
 
 ### LOWER
 ```
@@ -69,7 +69,7 @@ Numbers
 ### ARROW
 ```
 ,-----------------------------------------------------------------------------------.
-|      |      |      |      |      |      | PG_UP| HOME |  Up  | END  |      |      |
+| CMD+T|      |      |      |      |      | PG_UP| HOME |  Up  | END  |      |      |
 |------+------+------+------+------+------+------+------+------+------+------+------|
 |      |      |      |      |      |      | PG_DN| Left | Down |Right |  ALT |      |
 |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -84,6 +84,7 @@ Navigation
   * Inverted T navigation on ijkl.
   * Other navigation keys nearby.
   * Second [ALT] to make word boundary movement easier.
+  * Convenient CMD+T for new tabs
 
 
 ### FN
@@ -95,7 +96,7 @@ Navigation
 |------+------+------+------+------+------+------+------+------+------+------+------|
 |      |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |      |      |      |  \   |      |
 |------+------+------+------+------+------+------+------+------+------+------+------|
-|      |      |      |      |      |           |      | Next | Vol- | Vol+ | Play |
+|      |      |      |      |      |      |      |      |      | Vol- | Vol+ | Play |
 `-----------------------------------------------------------------------------------'
 ```
 
