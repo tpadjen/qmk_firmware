@@ -9,15 +9,15 @@
 
 ### QWERTY
 ```
-,---------------------------------------------------------------------------------------------------.
-| Tab         |   Q  |   W  |   E  |   R  |   T  |   Y     |   U  |   I  |   O  |   P  | Bksp       |
-|-------------+------+------+------+------+------+---------+------+------+------+------|------------|
-| Esc/Arrows  |   A  |   S  |   D  |   F  |   G  |   H     |   J  |   K  |   L  |   ;  | Enter      |
-|-------------+------+------+------+------+------+---------+------+------+------+------|------------|
-| Shift       |   Z  |   X  |   C  |   V  |   B  |   N     |   M  |   ,  |   .  |   /  | '/Shift    |
-|-------------+------+------+------+------+------+---------+------+------+------+------|------------|
-| Ctrl        | Alt  | CMD  | CMD  |Lower |Space |Sp/Arrow |Raise | FN   | CAPS | Alt  | Ctrl       |
-`---------------------------------------------------------------------------------------------------'
+,-------------------------------------------------------------------------------------------------.
+| Tab   |   Q   |   W   |   E   |   R   |   T   |   Y   |   U   |   I   |   O   |   P   | Bksp    |
+|-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------|---------|
+| Esc   |   A   |   S   |   D   |   F   |   G   |   H   |   J   |   K   |   L   |   ;   | Enter   |
+|-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------|---------|
+| Shift |   Z   |   X   |   C   |   V   |   B   |   N   |   M   |   ,   |   .   |   /   | '/Shift |
+|-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------|---------|
+| Ctrl  | Alt   |  CMD  |  CMD  | Lower | Space | Arrow | Raise |  FN   | CAPS  | Alt   | Ctrl    |
+`-------------------------------------------------------------------------------------------------'
 ```
 
 Standard planck QWERTY, except:
@@ -25,7 +25,7 @@ Standard planck QWERTY, except:
   * [Enter] replaces ['/"]. Gives a closer feel to a standard keyboard, and allows [Enter] to be registered immediately.
   * ['/"] is moved down to [RShift] when tapped.
   * Mods are rearranged in left lower corner.
-  * Either [Esc] or the right hand [Space], when held, activate the ARROW layer.
+  * The key to the right of [Space] activates the ARROW layer for convenient cursor movment.
   * Two convenient command mods on the left
 
 ### LOWER
