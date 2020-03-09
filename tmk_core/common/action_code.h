@@ -51,7 +51,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * ACT_SWAP_HANDS(0110):
  * 0110|xxxx| keycode     Swap hands (keycode on tap, or options)
  *
- * 0111|xxxx xxxx xxxx    (reserved)
+ * ACT_APPLE_FN(0111):
+ * 0111|xxxx xxxx xxxx    Apple Fn
  *
  * Layer Actions(10xx)
  * -------------------
@@ -109,6 +110,8 @@ enum action_kind_id {
     ACT_MOUSEKEY = 0b0101,
     /* One-hand Support */
     ACT_SWAP_HANDS = 0b0110,
+    /* Apple Fn */
+    ACT_APPLE_FN = 0b0111,
     /* Layer Actions */
     ACT_LAYER         = 0b1000,
     ACT_LAYER_MODS    = 0b1001,
@@ -339,5 +342,7 @@ enum swap_hands_param_tap_op {
 #define ACTION_SWAP_HANDS_OFF_ON() ACTION(ACT_SWAP_HANDS, OP_SH_OFF_ON)
 #define ACTION_SWAP_HANDS_ON() ACTION(ACT_SWAP_HANDS, OP_SH_ON)
 #define ACTION_SWAP_HANDS_OFF() ACTION(ACT_SWAP_HANDS, OP_SH_OFF)
+
+#define ACTION_APPLE_FN() ACTION(ACT_APPLE_FN, 0)
 
 #endif /* ACTION_CODE_H */
