@@ -35,7 +35,7 @@ enum planck_keycodes {
 #define LOWER MO(_LOWER)
 #define RAISE MO(_RAISE)
 #define ARROW MO(_ARROW)
-#define COMMAND MO(_COMMAND)
+#define COMMAND LM(MO(_COMMAND), MOD_LGUI)
 #define FN MO(_FN)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -55,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,   KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,  KC_U,  KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_ESC,   KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,  KC_J,  KC_K,    KC_L,    KC_SCLN, KC_ENT,
     KC_LSFT,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,  KC_M,  KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_QUOT),
-    KC_LCTL,  KC_LALT, KC_LGUI, LM(COMMAND, MOD_LGUI), LOWER,   KC_SPC,  ARROW, RAISE, FN, KC_CAPS, KC_RALT, KC_RCTL
+    KC_LCTL,  KC_LALT, KC_LGUI, COMMAND, LOWER,   KC_SPC,  ARROW, RAISE, FN,      KC_CAPS, KC_RALT, KC_RCTL
 ),
 
 /* Lower
@@ -175,32 +175,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   float plover_gb_song[][2]  = SONG(PLOVER_GOODBYE_SOUND);
 #endif
 
-bool onCommandLayer = false;
-
 layer_state_t layer_state_set_user(layer_state_t state) {
-  onCommandLayer = get_highest_layer(state) == _COMMAND;
   return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
-void remove_gui_for_code(uint16_t keycode, bool key_pressed) {
+void remove_mod_for_key(uint16_t modcode, uint16_t keycode, bool key_pressed) {
   if (key_pressed) {
-    del_mods(MOD_MASK_GUI);
+    unregister_code(modcode);
     register_code16(keycode);
   } else { // key released
     unregister_code16(keycode);
-    register_code(KC_LGUI);
+    register_code(modcode);
   }
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  if (onCommandLayer) {
+  if (IS_LAYER_ON(_COMMAND)) {
     switch(keycode) {
       case KC_AT:
       case KC_DEL:
       case KC_EXLM:
       case KC_LPRN:
       case KC_UNDS:
-        remove_gui_for_code(keycode, record->event.pressed);
+        remove_mod_for_key(KC_LGUI, keycode, record->event.pressed);
         return false;
     }
 
@@ -210,7 +207,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case QWERTY:
       if (record->event.pressed) {
-        // print("mode just switched to qwerty and this is a huge string\n");
         set_single_persistent_default_layer(_QWERTY);
       }
       return false;
