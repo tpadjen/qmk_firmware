@@ -29,7 +29,8 @@ enum planck_layers {
 };
 
 enum planck_keycodes {
-  QWERTY = SAFE_RANGE
+  QWERTY = SAFE_RANGE,
+  SLEEP
 };
 
 #define LOWER MO(_LOWER)
@@ -152,18 +153,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Adjust (Lower + Raise)
                      v------------------------RGB CONTROL------------------------v
-,---------------------------------------------------------------------------------------.
-|      | Reset|Debug | RGB  |RGBMOD  | HUE+ | HUE- | SAT+   | SAT- |BRGTH+|BRGTH-|  Del |
-|------+------+------+------+--------+------+------+--------+------+------+------+------|
-|      |      |MUSmod|Aud on|Audoff  |AGnorm|AGswap|Qwerty  |      |      |      |      |
-|------+------+------+------+--------+------+------+--------+------+------+------+------|
-|      |Voice-|Voice+|Mus on|Musoff  |MIDIon|MIDIof|TermOn  |TermOf|      |      |      |
-|------+------+------+------+--------+------+------+--------+------+------+------+------|
-|      |      |      |      |*ADJUST*|      |      |*ADJUST*|      |      |      |      |
-`---------------------------------------------------------------------------------------'
+,-----------------------------------------------------------------------------------------.
+|      | Reset|Debug | RGB  |RGBMOD  | HUE+ | HUE- | SAT+   | SAT- |BRGTH+|BRGTH-|  Sleep |
+|------+------+------+------+--------+------+------+--------+------+------+------+--------|
+|      |      |MUSmod|Aud on|Audoff  |AGnorm|AGswap|Qwerty  |      |      |      |        |
+|------+------+------+------+--------+------+------+--------+------+------+------+--------|
+|      |Voice-|Voice+|Mus on|Musoff  |MIDIon|MIDIof|TermOn  |TermOf|      |      |        |
+|------+------+------+------+--------+------+------+--------+------+------+------+--------|
+|      |      |      |      |*ADJUST*|      |      |*ADJUST*|      |      |      |        |
+`-----------------------------------------------------------------------------------------'
  */
 [_ADJUST] = LAYOUT_planck_grid(
-    _______, RESET,   DEBUG,   RGB_TOG, RGB_MOD, RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD,  RGB_VAI, RGB_VAD, KC_DEL,
+    _______, RESET,   DEBUG,   RGB_TOG, RGB_MOD, RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD,  RGB_VAI, RGB_VAD, SLEEP,
     _______, _______, MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, QWERTY,  _______,  _______, _______, _______,
     _______, MUV_DE,  MUV_IN,  MU_ON,   MU_OFF,  MI_ON,   MI_OFF,  TERM_ON, TERM_OFF, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______, _______
@@ -212,6 +213,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case QWERTY:
       if (record->event.pressed) {
         set_single_persistent_default_layer(_QWERTY);
+      }
+      return false;
+    case SLEEP:
+      if (record->event.pressed) {
+        // Mac
+        register_code(KC_LGUI);
+        register_code(KC_LALT);
+        tap_code(KC_POWER);
+        unregister_code(KC_LALT);
+        unregister_code(KC_LGUI);
+
+        // Windows
+        tap_code(KC_SLEP);
       }
       return false;
   }
