@@ -131,7 +131,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 /* COMMAND
-- The gui key is held for all transparent keys (handled by process_record_user)
+- The gui key is held for all transparent keys
+- gui key is released and reset around the press of listed keys (handled automatically by process_record_user)
 ,-------------------------------------------------------------------------------------------------.
 |       |   !   |   @   |         |       |       |       |       |       |   (   |       |  Del  |
 |-------+-------+-------+---------+-------+-------+-------+-------+-------+-------+-------|-------|
@@ -189,19 +190,21 @@ void remove_mod_for_key(uint16_t modcode, uint16_t keycode, bool key_pressed) {
   }
 }
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  if (IS_LAYER_ON(_COMMAND)) {
-    switch(keycode) {
-      case KC_AT:
-      case KC_DEL:
-      case KC_EXLM:
-      case KC_LPRN:
-      case KC_UNDS:
-        remove_mod_for_key(KC_LGUI, keycode, record->event.pressed);
-        return false;
+bool is_key_on_layer(uint16_t keycode, int layer) {
+  for (int row = 0; row < MATRIX_ROWS; row++) {
+    for (int col = 0; col < MATRIX_COLS; col++) {
+      if (keycode == keymaps[layer][row][col]) {
+        return true;
+      }
     }
+  }
+  return false;
+}
 
-    return true;
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (IS_LAYER_ON(_COMMAND) && is_key_on_layer(keycode, _COMMAND)) {
+    remove_mod_for_key(KC_LGUI, keycode, record->event.pressed);
+    return false;
   }
 
   switch (keycode) {
