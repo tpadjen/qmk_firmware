@@ -7,6 +7,7 @@
 
 ## Layers
 
+<hr>
 ### QWERTY
 ```
 ,-------------------------------------------------------------------------------------------------.
@@ -28,6 +29,8 @@ Standard planck QWERTY, except:
   * The key to the right of [Space] activates the ARROW layer for convenient cursor movment.
   * Two convenient command mods on the left
 
+<hr>
+
 ### LOWER
 ```
 ,------------------------------------------------------------------------------------.
@@ -48,6 +51,8 @@ Symbols
   * Math symbols in center, same as Raise.
   * Backslash and backtick placed on related base keys.
 
+<hr>
+
 ### RAISE
 ```
 ,------------------------------------------------------------------------------------.
@@ -66,6 +71,7 @@ Numbers
   * Standard number layout on top row.
   * Math symbols in center.
 
+<hr>
 
 ### ARROW
 ```
@@ -86,6 +92,8 @@ Navigation
   * Other navigation keys nearby.
   * Second [ALT] to make word boundary movement easier.
   * Convenient CMD+T for new tabs, and CMD+SHFT+T for re-opening closed tabs.
+
+<hr>
 
 ### COMMAND
 ```
@@ -109,6 +117,8 @@ Command convenience
     * Q, W, P, N, and Backspace are set to the same as the LOWER layer to reduce distracting mistakes, like closing windows or opening files.
     * ` is placed directly underneath tab for switching between open windows of the same app on Mac.
 
+<hr>
+
 ### FN
 ```
 ,-----------------------------------------------------------------------------------.
@@ -126,6 +136,7 @@ Function keys
 
   * Top row and right side same as Lower.
 
+<hr>
 
 ### ADJUST
 ```
