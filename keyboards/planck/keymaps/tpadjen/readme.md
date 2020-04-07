@@ -99,9 +99,9 @@ Navigation
 ```
 ! - Cmd is held for all transparent keys
 ,-------------------------------------------------------------------------------------------------.
-|       |   !   |   @   |         |       |       |       |       |       |   (   |       |  Del  |
+|CMD+Tab|   !   |   @   |         |       |       |       |       |       |   (   |       |  Del  |
 |-------+-------+-------+---------+-------+-------+-------+-------+-------+-------+-------|-------|
-|  `    |       |       |         |       |       |       |       |       |       |       |       |
+| CMD+` |       |       |         |       |       |       |       |       |       |       |       |
 |-------+-------+-------+---------+-------+-------+-------+-------+-------+-------+-------|-------|
 |       |       |       |         |       |       |   _   |       |       |       |       |       |
 |-------+-------+-------+---------+-------+-------+-------+-------+-------+-------+-------|-------|
@@ -115,7 +115,7 @@ Command convenience
   * Most keys pass through to the underneath layers, but with the command key held.
   * Exceptions:
     * Q, W, P, N, and Backspace are set to the same as the LOWER layer to reduce distracting mistakes, like closing windows or opening files.
-    * ` is placed directly underneath tab for switching between open windows of the same app on Mac.
+    * CMD+` is placed under CMD+Tab for switching between open windows of the same app on Mac, it also reverses CMD+Tab order when switcher is already visible
 
 <hr>
 
