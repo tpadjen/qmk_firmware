@@ -36,8 +36,10 @@ enum planck_keycodes {
 #define LOWER MO(_LOWER)
 #define RAISE MO(_RAISE)
 #define ARROW MO(_ARROW)
-#define COMMAND LM(MO(_COMMAND), MOD_LGUI)
+#define COMMAND MO(_COMMAND)
 #define FN MO(_FN)
+#define CMD_GRV LGUI(KC_GRV)
+#define CMD_TAB LGUI(KC_TAB)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -145,8 +147,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 `-------------------------------------------------------------------------------------------------'
  */
 [_COMMAND] = LAYOUT_planck_grid(
-    _______, KC_EXLM, KC_AT,   _______, _______, _______, _______, _______, _______, KC_LPRN, _______, KC_DEL,
-    KC_GRV,  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    CMD_TAB, KC_EXLM, KC_AT,   _______, _______, _______, _______, _______, _______, KC_LPRN, _______, KC_DEL,
+    CMD_GRV, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
     _______, _______, _______, _______, _______, _______, KC_UNDS, _______, _______, _______, _______, _______,
     _______, _______, KC_NO,   _______, _______, _______, _______, _______, _______, KC_CAPS, _______, _______
 ),
@@ -182,14 +184,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
   return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
-void remove_mod_for_key(uint16_t modcode, uint16_t keycode, bool key_pressed) {
-  if (key_pressed) {
-    unregister_code(modcode);
-    register_code16(keycode);
-  } else { // key released
-    unregister_code16(keycode);
-    register_code(modcode);
-  }
+bool is_keycode_excluded(uint16_t keycode) {
+  return keycode == CMD_GRV || keycode == CMD_TAB;
 }
 
 bool is_key_on_layer(uint16_t keycode, int layer) {
@@ -203,10 +199,20 @@ bool is_key_on_layer(uint16_t keycode, int layer) {
   return false;
 }
 
+bool should_remove_gui(uint16_t keycode, bool key_pressed) {
+  return !is_keycode_excluded(keycode) && key_pressed && is_key_on_layer(keycode, _COMMAND);
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  if (IS_LAYER_ON(_COMMAND) && is_key_on_layer(keycode, _COMMAND)) {
-    remove_mod_for_key(KC_LGUI, keycode, record->event.pressed);
-    return false;
+
+  // unset GUI on COMMAND Layer keys that exist on its map, except CMD keys
+  uint16_t current_layer = biton32(layer_state);
+  if (current_layer == _COMMAND && keycode != COMMAND) {
+    if (should_remove_gui(keycode, record->event.pressed)) {
+      unregister_mods(MOD_LGUI);
+    } else {
+      register_mods(MOD_LGUI);
+    }
   }
 
   switch (keycode) {
@@ -228,6 +234,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         tap_code(KC_SLEP);
       }
       return false;
+    case COMMAND: // set GUI when COMMAND layer active
+      if (record->event.pressed) {
+        register_mods(MOD_LGUI);
+      } else {
+        unregister_mods(MOD_LGUI);
+      }
+      break;
   }
   return true;
 }
