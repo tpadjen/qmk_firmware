@@ -151,6 +151,8 @@ void process_record_nocache(keyrecord_t *record) { process_record(record); }
 
 __attribute__((weak)) bool process_record_quantum(keyrecord_t *record) { return true; }
 
+__attribute__((weak)) void post_process_record_quantum(keyrecord_t *record) {}
+
 #ifndef NO_ACTION_TAPPING
 /** \brief Allows for handling tap-hold actions immediately instead of waiting for TAPPING_TERM or another keypress.
  *
@@ -185,6 +187,11 @@ void process_record(keyrecord_t *record) {
 
     if (!process_record_quantum(record)) return;
 
+    process_record_handler(record);
+    post_process_record_quantum(record);
+}
+
+void process_record_handler(keyrecord_t *record) {
     action_t action = store_or_get_action(record->event.pressed, record->event.key);
     dprint("ACTION: ");
     debug_action(action);
@@ -317,7 +324,7 @@ void process_action(keyrecord_t *record, action_t action) {
 #    if !defined(IGNORE_MOD_TAP_INTERRUPT) || defined(IGNORE_MOD_TAP_INTERRUPT_PER_KEY)
                             if (
 #        ifdef IGNORE_MOD_TAP_INTERRUPT_PER_KEY
-                                !get_ignore_mod_tap_interrupt(get_event_keycode(record->event)) &&
+                                !get_ignore_mod_tap_interrupt(get_event_keycode(record->event, false)) &&
 #        endif
                                 record->tap.interrupted) {
                                 dprint("mods_tap: tap: cancel: add_mods\n");
@@ -572,8 +579,6 @@ void process_action(keyrecord_t *record, action_t action) {
             action_macro_play(action_get_macro(record, action.func.id, action.func.opt));
             break;
 #endif
-        case ACT_COMMAND:
-            break;
 #ifdef SWAP_HANDS_ENABLE
         case ACT_SWAP_HANDS:
             switch (action.swap.code) {
@@ -764,6 +769,13 @@ void register_code(uint8_t code) {
 */
 #endif
             {
+                // Force a new key press if the key is already pressed
+                // without this, keys with the same keycode, but different
+                // modifiers will be reported incorrectly, see issue #1708
+                if (is_key_pressed(keyboard_report, code)) {
+                    del_key(code);
+                    send_keyboard_report();
+                }
                 add_key(code);
                 send_keyboard_report();
             }
@@ -773,16 +785,11 @@ void register_code(uint8_t code) {
             add_mods(MOD_BIT(code));
             send_keyboard_report();
         }
+#ifdef EXTRAKEY_ENABLE
     else if
         IS_SYSTEM(code) { host_system_send(KEYCODE2SYSTEM(code)); }
     else if
         IS_CONSUMER(code) { host_consumer_send(KEYCODE2CONSUMER(code)); }
-#ifdef APPLE_FN_ENABLE
-    else if
-        IS_APPLE_FN(code) {
-            add_key(code);
-            send_keyboard_report();
-        }
 #endif
 #ifdef MOUSEKEY_ENABLE
     else if
@@ -880,7 +887,7 @@ void tap_code(uint8_t code) {
 
 /** \brief Adds the given physically pressed modifiers and sends a keyboard report immediately.
  *
- * \param mods A bitfield of modifiers to unregister.
+ * \param mods A bitfield of modifiers to register.
  */
 void register_mods(uint8_t mods) {
     if (mods) {
@@ -1006,7 +1013,6 @@ bool is_tap_action(action_t action) {
  * FIXME: Needs documentation.
  */
 void debug_event(keyevent_t event) { dprintf("%04X%c(%u)", (event.key.row << 8 | event.key.col), (event.pressed ? 'd' : 'u'), event.time); }
-
 /** \brief Debug print (FIXME: Needs better description)
  *
  * FIXME: Needs documentation.
@@ -1059,9 +1065,6 @@ void debug_action(action_t action) {
             break;
         case ACT_MACRO:
             dprint("ACT_MACRO");
-            break;
-        case ACT_COMMAND:
-            dprint("ACT_COMMAND");
             break;
         case ACT_FUNCTION:
             dprint("ACT_FUNCTION");
