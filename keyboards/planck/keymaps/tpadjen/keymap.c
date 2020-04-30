@@ -17,6 +17,9 @@
 #include QMK_KEYBOARD_H
 #include "muse.h"
 
+// #include <print.h>
+#include <string.h>
+#include "raw_hid.h"
 
 enum planck_layers {
   _QWERTY,
@@ -31,6 +34,18 @@ enum planck_layers {
 enum planck_keycodes {
   QWERTY = SAFE_RANGE,
   SLEEP
+};
+
+enum incoming_event {
+  INITIAL_CONNECTION = 1,
+  ECHO_IN,
+  EXIT
+};
+
+enum outgoing_event {
+  GREETING = 1,
+  MESSAGE,
+  ECHO_OUT
 };
 
 #define LOWER MO(_LOWER)
@@ -237,12 +252,73 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case COMMAND: // set GUI when COMMAND layer active
       if (record->event.pressed) {
         register_mods(MOD_LGUI);
+        // uint8_t send_data[32] = {2, 0};
+        // raw_hid_send(send_data, sizeof(send_data));
       } else {
         unregister_mods(MOD_LGUI);
       }
       break;
   }
   return true;
+}
+
+bool is_hid_connected = false;
+
+void send_hid_message(char *message) {
+  // printf(message);
+  uint8_t raw_message[RAW_EPSIZE] = {};
+  raw_message[0] = MESSAGE;
+  for (size_t i = 0; i < strlen(message); i++) {
+    if (i < strlen(message)) {
+      raw_message[i+1] = (uint8_t)message[i];
+    }
+  }
+
+  raw_hid_send(raw_message, RAW_EPSIZE);
+}
+
+void send_hid_greeting(void) {
+  uint8_t raw_message[RAW_EPSIZE] = {};
+  raw_message[0] = GREETING;
+
+  raw_hid_send(raw_message, RAW_EPSIZE);
+}
+
+void raw_hid_receive(uint8_t *data, uint8_t length) {
+  is_hid_connected = true;
+  // print("Connected over hid\n");
+
+  switch (data[0]) {
+    case INITIAL_CONNECTION:
+      send_hid_greeting();
+      break;
+    case ECHO_IN: ;
+      uint8_t message[RAW_EPSIZE] = {};
+      // message[0] = ECHO_OUT;
+      for (size_t i = 0; i < length && i < RAW_EPSIZE; i++) {
+        message[i] = data[i];
+      }
+
+      raw_hid_send(message, RAW_EPSIZE);
+      break;
+    case EXIT:
+      send_hid_message("Bye");
+      break;
+    default:
+      send_hid_message("HID command not understood");
+      break;
+  }
+
+  // if (length > 1 && data[0] == 1) { // initial connection
+  //   // print("Sending hello message\n");
+  //   uint8_t message_array[RAW_EPSIZE] = "Hello";
+  //   raw_hid_send(message_array, sizeof(message_array));
+  //   return;
+  // } else {
+  //   // print("not initial connection\n");
+  //   uint8_t send_data[RAW_EPSIZE] = "Later";
+  //   raw_hid_send(send_data, sizeof(send_data));
+  // }
 }
 
 bool muse_mode = false;
